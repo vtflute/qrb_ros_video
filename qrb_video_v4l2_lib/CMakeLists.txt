@@ -13,6 +13,16 @@ pkg_check_modules(glog REQUIRED libglog)
 set(INCLUDE_DIRS ${glog_INCLUDE_DIRS})
 
 include_directories(${INCLUDE_DIRS})
+add_compile_options(
+  -Wall
+  -Wpedantic
+  -Werror
+  -Wno-unused-parameter
+  -Wno-unused-variable
+  -Wno-unused-function
+  -Wno-unused-value
+  -std=c++17
+)
 
 file(GLOB SOURCES src/utils/*.cpp src/*.cpp src/v4l2/*.cpp)
 

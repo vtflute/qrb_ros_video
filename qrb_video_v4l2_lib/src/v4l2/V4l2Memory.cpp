@@ -24,12 +24,11 @@ DmabufAllocator::~DmabufAllocator()
 
 std::shared_ptr<Allocation> DmabufAllocator::allocate()
 {
-  struct dma_heap_allocation_data data = {
-    .len = view.planes[0].size,
-    .fd = 0,
-    .fd_flags = O_RDWR | O_CLOEXEC,
-    .heap_flags = 0,
-  };
+  struct dma_heap_allocation_data data = {};
+  data.len = view.planes[0].size;
+  data.fd = 0;
+  data.fd_flags = O_RDWR | O_CLOEXEC;
+  data.heap_flags = 0;
   if (::ioctl(fd, DMA_HEAP_IOCTL_ALLOC, &data) < 0) {
     throw std::runtime_error("Failed to allocate buffer");
   }

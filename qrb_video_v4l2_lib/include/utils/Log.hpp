@@ -75,9 +75,7 @@ public:
   {
     const int n = vsnprintf(nullptr, 0, fmt, args);
     std::string s;
-    if (s.capacity() < n) {
-      s.reserve(n);
-    }
+    s.reserve(n);
     s.resize(n);
     vsnprintf(s.data(), n + 1, fmt, args);
 
@@ -85,9 +83,9 @@ public:
   }
 };
 
-#define LOGI(fmt, ...) Log::logInfo(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
-#define LOGW(fmt, ...) Log::logWarning(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
-#define LOGE(fmt, ...) Log::logError(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
+#define LOGI(...) Log::logInfo(__FILE__, __LINE__, __VA_ARGS__)
+#define LOGW(...) Log::logWarning(__FILE__, __LINE__, __VA_ARGS__)
+#define LOGE(...) Log::logError(__FILE__, __LINE__, __VA_ARGS__)
 
 }  // namespace qrb::video_v4l2
 
