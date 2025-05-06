@@ -119,6 +119,9 @@ protected:
         new lib_mem_dmabuf::DmaBuffer(dup(fd), image_size), destroy_callback);
     msg->encoding = this->format;
     this->publisher->publish(std::move(msg));
+    RCLCPP_DEBUG(this->get_logger(),
+        "[%s]: transport::type::Image, format[%s] size[%zd] ts[%ld.%ld]", __func__,
+        this->format.c_str(), image_size, item->timestamp.tv_sec, item->timestamp.tv_usec);
     return true;
   }
 
@@ -142,8 +145,8 @@ protected:
     msg->format = this->format;
     this->publisher->publish(std::move(msg));
     RCLCPP_DEBUG(this->get_logger(),
-        "[%s]: sensor_msgs::msg::CompressedImage, format[%d] size[%zd] ts[%ld.%ld]", __func__,
-        this->format, image_size, item->timestamp.tv_sec, item->timestamp.tv_sec);
+        "[%s]: sensor_msgs::msg::CompressedImage, format[%s] size[%zd] ts[%ld.%ld]", __func__,
+        this->format.c_str(), image_size, item->timestamp.tv_sec, item->timestamp.tv_usec);
     return true;
   }
 

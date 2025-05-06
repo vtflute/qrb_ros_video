@@ -8,6 +8,7 @@
   <license>BSD-3-Clause-Clear</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>pkg-config</buildtool_depend>
 
   <depend>std_msgs</depend>
   <depend>sensor_msgs</depend>
@@ -17,6 +18,12 @@
   <depend>ros2launch</depend>
   <depend>qrb_video_v4l2_lib</depend>
   <depend>qrb_ros_transport_image_type</depend>
+
+  <build_depend>libgstreamer1.0-dev</build_depend>
+  <build_depend>libgstreamer-plugins-base1.0-dev</build_depend>
+
+  <exec_depend>libgstreamer1.0-0</exec_depend>
+  <exec_depend>libgstreamer-plugins-base1.0-0</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

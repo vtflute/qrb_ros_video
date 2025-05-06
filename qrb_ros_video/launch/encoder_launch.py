@@ -22,21 +22,6 @@ def generate_launch_description():
         executable='component_container',
         composable_node_descriptions=[
             ComposableNode(
-                package='qrb_ros_camera',
-                plugin='qrb_ros::camera::CameraNode',
-                namespace='recording_ns',
-                name='camera_node',
-                parameters=[{
-                    'camera_info_path': camera_info_path,
-                    'fps': 30,
-                    'width': 1920,
-                    'height': 1080,
-                    'cameraId': 1,
-                }],
-                extra_arguments=[{"use_intra_process_comms": True}],
-                remappings=[('image', 'encoder_node/input')],
-            ),
-            ComposableNode(
                 package='qrb_ros_video',
                 plugin='qrb_ros::video::Encoder',
                 namespace='recording_ns',
@@ -63,13 +48,28 @@ def generate_launch_description():
                 namespace='recording_ns',
                 name='writer_node',
                 parameters=[{
-                    'url': "/data/1920_1080_nv12.h264",
-                    'format': "h264",
+                    'url': "/data/1920_1080_nv12.mp4",
+                    'format': "mp4",
                 }],
                 extra_arguments=[{"use_intra_process_comms": True}],
                 remappings=[("input", "writer_node/compressed_image"),
                             ]
-            )
+            ),
+            ComposableNode(
+                package='qrb_ros_video',
+                plugin='qrb_ros::video::ImageReader',
+                namespace='recording_ns',
+                name='reader_node',
+                parameters=[{
+                    'url': "/data/1920_1080_nv12.yuv",
+                    'format': "nv12",
+                    'width': "1920",
+                    'height': "1080",
+                    'framerate': "30",
+                }],
+                extra_arguments=[{"use_intra_process_comms": True}],
+                remappings=[("output", "encoder_node/input")]
+            ),
         ],
         output='screen',
     )

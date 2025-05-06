@@ -33,8 +33,8 @@ def generate_launch_description():
                 namespace='playback_ns',
                 name='writer_node',
                 parameters=[{
-                    'url': "/data/1920_1080_nv12.yuv",
-                    'format': 'mp4',
+                    'url': "/dev/null",
+                    'format': "nv12",
                 }],
                 extra_arguments=[{"use_intra_process_comms": True}],
                 remappings=[("input", "writer_node/raw_image")]
@@ -45,10 +45,10 @@ def generate_launch_description():
                 namespace='playback_ns',
                 name='reader_node',
                 parameters=[{
-                    'url': "/data/1920_1080_nv12.h264",
-                    'pixel-format': "h264",
+                    'url': "/data/1920_1080.mp4",
+                    'format': "mp4",
                     'width': "1920",
-                    'hight': "1080",
+                    'height': "1080",
                     'framerate': "30",
                 }],
                 extra_arguments=[{"use_intra_process_comms": True}],

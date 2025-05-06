@@ -103,6 +103,7 @@ protected:
     std::for_each(latency_.begin(), latency_.end(), [&](auto & sample) {
       if (sample.second[fbd] == 0) {
         num[fbd]--;
+        num[etb]--;
         return;
       }
       uint64_t input_latency = sample.second[etb] - sample.first;

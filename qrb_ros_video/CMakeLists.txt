@@ -16,9 +16,16 @@ find_package(rclcpp_components REQUIRED)
 find_package(ament_cmake_auto REQUIRED)
 find_package(qrb_video_v4l2_lib REQUIRED)
 
+# Add GStreamer dependency
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(gstreamer REQUIRED gstreamer-1.0 gstreamer-base-1.0 
+                                    gstreamer-video-1.0 gstreamer-app-1.0 
+                                    gstreamer-allocators-1.0 gstreamer-pbutils-1.0)
+
 include_directories(std_msgs_INCLUDE_DIRS)
 include_directories(sensor_msgs_INCLUDE_DIRS)
 include_directories(rclcpp_components_INCLUDE_DIRS)
+include_directories(gstreamer_INCLUDE_DIRS)
 
 ament_auto_find_build_dependencies()
   
@@ -45,6 +52,43 @@ rclcpp_components_register_nodes(
   "qrb_ros::video::PerfDecoder"
   "qrb_ros::video::Encoder"
   "qrb_ros::video::PerfEncoder"
+)
+
+# Add test components library
+ament_auto_add_library(test_components SHARED 
+  test/src/src_node.cpp 
+  test/src/sink_node.cpp
+)
+target_include_directories(test_components PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/test/include>
+  $<INSTALL_INTERFACE:test/include>)
+target_compile_features(test_components PUBLIC cxx_std_17)
+ament_target_dependencies(
+  test_components
+  "std_msgs"
+  "sensor_msgs"
+  "rclcpp"
+  "rclcpp_components"
+  "gstreamer"
+)
+target_link_libraries(test_components ${gstreamer_LIBRARIES})
+target_link_directories(test_components PRIVATE $<TARGET_LINKER_FILE_DIR:v4l2codecs>)
+
+# Register test components
+rclcpp_components_register_nodes(
+  test_components
+  "qrb_ros::video::ImageWriter"
+  "qrb_ros::video::ImageReader"
+  "qrb_ros::video::CompressedReader"
+  "qrb_ros::video::CompressedWriter"
+)
+
+# Install executables and libraries
+install(TARGETS
+  test_components
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 ament_auto_package(INSTALL_TO_SHARE launch)
