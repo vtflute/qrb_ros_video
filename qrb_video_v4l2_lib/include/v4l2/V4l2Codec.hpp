@@ -8,11 +8,11 @@
 #ifndef QRB_VIDEO_V4L2__V4L2CODEC_HPP_
 #define QRB_VIDEO_V4L2__V4L2CODEC_HPP_
 
+#include <array>
 #include <linux/v4l2_vidc_extensions.hpp>
 #include <memory>
 #include <string>
 #include <unordered_map>
-#include <array>
 
 #include "BufferChannel.hpp"
 #include "BufferPool.hpp"
@@ -84,11 +84,11 @@ public:
   bool onV4l2Error(error_t error) override;
 
 protected:
-  static const std::unordered_map<uint32_t, uint32_t> avcProfileMapping;
-  static const std::unordered_map<uint32_t, uint32_t> hevcProfileMapping;
-  static const std::unordered_map<uint32_t, uint32_t> avcLevelMapping;
-  static const std::unordered_map<uint32_t, uint32_t> hevcLevelMapping;
-  static const std::unordered_map<Bitrate::Mode, uint32_t> bitrateModeMapping;
+  static const std::unordered_map<uint32_t, int32_t> avcProfileMapping;
+  static const std::unordered_map<uint32_t, int32_t> hevcProfileMapping;
+  static const std::unordered_map<uint32_t, int32_t> avcLevelMapping;
+  static const std::unordered_map<uint32_t, int32_t> hevcLevelMapping;
+  static const std::unordered_map<Bitrate::Mode, int32_t> bitrateModeMapping;
   static const std::unordered_map<Format, uint32_t> formatMapping;
 
   CodecType type;

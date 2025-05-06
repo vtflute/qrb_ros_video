@@ -17,7 +17,7 @@
 
 namespace qrb::video_v4l2
 {
-const std::unordered_map<uint32_t, uint32_t> V4l2Codec::avcProfileMapping = {
+const std::unordered_map<uint32_t, int32_t> V4l2Codec::avcProfileMapping = {
   { Profile::AVC_BASELINE, V4L2_MPEG_VIDEO_H264_PROFILE_BASELINE },
   { Profile::AVC_CONSTRAINED_BASELINE, V4L2_MPEG_VIDEO_H264_PROFILE_CONSTRAINED_BASELINE },
   { Profile::AVC_MAIN, V4L2_MPEG_VIDEO_H264_PROFILE_MAIN },
@@ -25,13 +25,13 @@ const std::unordered_map<uint32_t, uint32_t> V4l2Codec::avcProfileMapping = {
   { Profile::AVC_CONSTRAINED_HIGH, V4L2_MPEG_VIDEO_H264_PROFILE_CONSTRAINED_HIGH },
 };
 
-const std::unordered_map<uint32_t, uint32_t> V4l2Codec::hevcProfileMapping = {
+const std::unordered_map<uint32_t, int32_t> V4l2Codec::hevcProfileMapping = {
   { Profile::HEVC_MAIN, V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN },
   { Profile::HEVC_MAIN10, V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN_10 },
   { Profile::HEVC_MAIN_STILL, V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN_STILL_PICTURE },
 };
 
-const std::unordered_map<uint32_t, uint32_t> V4l2Codec::avcLevelMapping = {
+const std::unordered_map<uint32_t, int32_t> V4l2Codec::avcLevelMapping = {
   { Level::AVC_1_0, V4L2_MPEG_VIDEO_H264_LEVEL_1_0 },
   { Level::AVC_1_B, V4L2_MPEG_VIDEO_H264_LEVEL_1B },
   { Level::AVC_1_1, V4L2_MPEG_VIDEO_H264_LEVEL_1_1 },
@@ -54,7 +54,7 @@ const std::unordered_map<uint32_t, uint32_t> V4l2Codec::avcLevelMapping = {
   { Level::AVC_6_2, V4L2_MPEG_VIDEO_H264_LEVEL_6_2 },
 };
 
-const std::unordered_map<uint32_t, uint32_t> V4l2Codec::hevcLevelMapping = {
+const std::unordered_map<uint32_t, int32_t> V4l2Codec::hevcLevelMapping = {
   { Level::HEVC_1_0, V4L2_MPEG_VIDEO_HEVC_LEVEL_1 },
   { Level::HEVC_2_0, V4L2_MPEG_VIDEO_HEVC_LEVEL_2 },
   { Level::HEVC_2_1, V4L2_MPEG_VIDEO_HEVC_LEVEL_2_1 },
@@ -70,7 +70,7 @@ const std::unordered_map<uint32_t, uint32_t> V4l2Codec::hevcLevelMapping = {
   { Level::HEVC_6_2, V4L2_MPEG_VIDEO_HEVC_LEVEL_6_2 },
 };
 
-const std::unordered_map<Bitrate::Mode, uint32_t> V4l2Codec::bitrateModeMapping = {
+const std::unordered_map<Bitrate::Mode, int32_t> V4l2Codec::bitrateModeMapping = {
   { Bitrate::CBR, V4L2_MPEG_VIDEO_BITRATE_MODE_CBR },
   { Bitrate::VBR, V4L2_MPEG_VIDEO_BITRATE_MODE_VBR },
 };
@@ -296,6 +296,7 @@ bool V4l2Codec::prepareForDispatch(std::shared_ptr<V4l2Buffer> & buf, v4l2_buffe
     LOGI("Output buffer EOS received");
     buf->setEOS();
   }
+  return true;
 }
 
 bool V4l2Codec::onAcquireBuffer(std::shared_ptr<Buffer> & item)
@@ -403,8 +404,13 @@ bool V4l2Codec::queueInputBuffer(const std::shared_ptr<Buffer> & item)
     buf.index = buffer_queued_[INPUT_PORT].size();
   }
   ret = getDriver()->queueBuf(&buf);
-  LOGI("%s: queued index %d buffer type %d", __PRETTY_FUNCTION__, buf.index, buf.type);
-  buffer_queued_[INPUT_PORT][buf.index] = buffer;
+  if (ret == 0) {
+      LOGI("%s: queued index %d buffer type %d", __PRETTY_FUNCTION__, buf.index, buf.type);
+      buffer_queued_[INPUT_PORT][buf.index] = buffer;
+  } else {
+    LOGE("%s: failed to queue buffer %d buffer type %d", __PRETTY_FUNCTION__, buf.index, buf.type);
+  }
+
   return ret == 0;
 }
 
@@ -429,8 +435,12 @@ bool V4l2Codec::queueOutputBuffer(const std::shared_ptr<Buffer> & item)
     buf.index = buffer_queued_[OUTPUT_PORT].size();
   }
   ret = getDriver()->queueBuf(&buf);
-  LOGI("%s: queued index %d buffer type %d", __PRETTY_FUNCTION__, buf.index, buf.type);
-  buffer_queued_[OUTPUT_PORT][buf.index] = buffer;
+  if (ret == 0) {
+    LOGI("%s: queued index %d buffer type %d", __PRETTY_FUNCTION__, buf.index, buf.type);
+    buffer_queued_[OUTPUT_PORT][buf.index] = buffer;
+  } else {
+    LOGE("%s: failed to queue buffer %d buffer type %d", __PRETTY_FUNCTION__, buf.index, buf.type);
+  }
   return ret == 0;
 }
 
@@ -809,7 +819,7 @@ V4l2Codec::V4l2Format::operator MemoryView()
   view.pixelfmt = format;
   view.type = Memory::determineType(format);
   view.num_planes = v4l2_fmt.fmt.pix_mp.num_planes;
-  for (int index = 0; index < view.num_planes; index++) {
+  for (uint32_t index = 0; index < view.num_planes; index++) {
     view.planes[index].size = v4l2_fmt.fmt.pix_mp.plane_fmt[index].sizeimage;
     view.planes[index].stride = v4l2_fmt.fmt.pix_mp.plane_fmt[index].bytesperline;
     view.planes[index].scanline = v4l2_fmt.fmt.pix_mp.height;

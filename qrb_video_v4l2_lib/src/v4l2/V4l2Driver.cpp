@@ -8,7 +8,6 @@
 #include "V4l2Driver.hpp"
 
 #include <fcntl.h>
-#include <linux/v4l2_vidc_extensions.hpp>
 #include <poll.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
@@ -16,6 +15,8 @@
 
 #include <cstdint>
 #include <filesystem>
+#include <functional>
+#include <linux/v4l2_vidc_extensions.hpp>
 #include <map>
 #include <stdexcept>
 #include <string>
@@ -112,7 +113,7 @@ void V4l2Driver::start()
 {
   if (not pollThread.joinable()) {
     pollThreadRunning = true;
-    pollThread = std::thread(std::mem_fun(&V4l2Driver::threadLoop), this);
+    pollThread = std::thread(std::mem_fn(&V4l2Driver::threadLoop), this);
   }
   LOGI("poll thread started");
 }

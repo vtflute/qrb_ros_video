@@ -42,7 +42,7 @@ struct Memory
   };
 
   explicit Memory(const std::shared_ptr<Allocation> & allocation)
-    : base(nullptr), allocation(allocation)
+    : allocation(allocation), base(nullptr)
   {
   }
 
@@ -118,7 +118,7 @@ struct MemoryView
     return view;
   }
 
-  uint32_t determinePlanes()
+  void determinePlanes()
   {
     switch (pixelfmt) {
       case Format::NV12: {
