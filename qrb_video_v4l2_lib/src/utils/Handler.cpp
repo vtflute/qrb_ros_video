@@ -48,7 +48,12 @@ int32_t Handler::sendMessage(std::shared_ptr<Message> & message)
   if (message->flags & Flags::SYNC) {
     LOGI("wait for msg done");
     auto future = message->promise.get_future();
-    result = future.get();
+    if (future.wait_for(std::chrono::milliseconds(100)) == std::future_status::ready) {
+      result = future.get();
+    } else {
+      LOGE("wait for msg done timeout");
+      result = 0;
+    }
   }
 
   return result;

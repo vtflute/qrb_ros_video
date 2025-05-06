@@ -25,7 +25,6 @@ std::shared_ptr<Buffer> BufferChannel::acquireBuffer()
   auto msg = this->obtainMessage(MSG_ACQUIRE_BUFFER);
   msg->data = std::shared_ptr<Buffer>();
   this->sendMessage(msg);
-  LOGI("send msg %d with %s", MSG_ACQUIRE_BUFFER, msg->data);
   return std::any_cast<std::shared_ptr<Buffer> >(msg->data);
 }
 

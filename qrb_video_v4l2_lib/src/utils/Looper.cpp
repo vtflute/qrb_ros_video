@@ -43,17 +43,28 @@ bool Looper::handleMessage(const std::shared_ptr<Message> & msg)
 void Looper::loop()
 {
   while (running) {
-    std::unique_lock lk(lock);
-    while (messages.empty()) {
-      cv.wait_for(lk, std::chrono::milliseconds(10));
+    std::shared_ptr<Message> msg;
+
+    // Scope for the lock to minimize critical section
+    {
+      std::unique_lock<std::mutex> lk(lock);
+      cv.wait_for(
+          lk, std::chrono::milliseconds(10), [this]() { return !messages.empty() || !running; });
+
+      // Check if we're still running after wait
+      if (!running)
+        break;
+      if (messages.empty())
+        continue;
+
+      msg = messages.front();
+      messages.erase(messages.begin());
+    }  // lock is released here
+
+    // Process message outside the critical section
+    if (msg) {
+      handleMessage(msg);
     }
-
-    auto msg = messages.front();
-    messages.erase(messages.begin());
-    // unlock before handling the message
-    lk.unlock();
-
-    handleMessage(msg);
   }
 }
 }  // namespace qrb::video_v4l2
