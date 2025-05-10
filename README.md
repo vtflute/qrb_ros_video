@@ -2,7 +2,7 @@
 QRB ROS Video is a ROS package which provides video hardware acceleration capabilities on Qualcomm platform.
 
 ## Overview
-QRB ROS Video utilizes the advanced Qualcomm VPU hardware for video encoding and decoding to meet the requirements of Robotics applications. QRB ROS Video is based on [qrb_ros_transport](https://github.com/quic-qrb-ros/qrb_ros_transport) which help us to implement zero memory copy locally and accept buffers from [qrb_ros_camera](https://github.com/quic-qrb-ros/qrb_ros_camera) to fulfill the recording purpose.
+QRB ROS Video utilizes the advanced Qualcomm VPU hardware for video encoding and decoding to meet the requirements of Robotics applications. QRB ROS Video is based on [qrb_ros_transport](https://github.com/qualcomm-qrb-ros/qrb_ros_transport) which help us to implement zero memory copy locally and accept buffers from [qrb_ros_camera](https://github.com/qualcomm-qrb-ros/qrb_ros_camera) to fulfill the recording purpose.
 
 Right now, we support H264 codec. HEVC support will be added in future.
 
@@ -50,10 +50,10 @@ Currently, we only support build with QCLINUX SDK.
 3. Clone this repository under `<qirp_decompressed_workspace>/qirp-sdk/ros_ws`
 
     ```bash
-    git clone https://github.com/quic-qrb-ros/qrb_ros_imu.git
-    git clone https://github.com/quic-qrb-ros/lib_mem_dmabuf.git
-    git clone https://github.com/quic-qrb-ros/qrb_ros_transport.git
-    git clone https://github.com/quic-qrb-ros/qrb_ros_video.git
+    git clone https://github.com/qualcomm-qrb-ros/qrb_ros_imu.git
+    git clone https://github.com/qualcomm-qrb-ros/lib_mem_dmabuf.git
+    git clone https://github.com/qualcomm-qrb-ros/qrb_ros_transport.git
+    git clone https://github.com/qualcomm-qrb-ros/qrb_ros_video.git
     ```
 
 4. Build this project
@@ -114,7 +114,7 @@ We would love to have you as a part of the QRB ROS community. Whether you are he
 
 
 ## Documentation
-Please visit [QRB ROS Documentation](https://quic-qrb-ros.github.io/) for more details.
+Please visit [QRB ROS Documentation](https://qualcomm-qrb-ros.github.io/) for more details.
 
 
 ## Authors
