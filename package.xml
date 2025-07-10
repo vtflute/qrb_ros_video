@@ -13,7 +13,7 @@
   <depend>std_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>rclcpp</depend>
-  <depend>image_transport</depend>
+  <depend>lib_mem_dmabuf</depend>
   <depend>rclcpp_components</depend>
   <depend>ros2launch</depend>
   <depend>qrb_video_v4l2_lib</depend>
