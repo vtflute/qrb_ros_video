@@ -1,0 +1,8 @@
+ros-jazzy-qrb-ros-video (0.1.0) noble; urgency=medium
+
+  * Initial release of QRB ROS Video package
+  * Video encoding and decoding ROS 2 nodes
+  * Hardware-accelerated video processing components
+  * Integration with V4L2 codecs
+
+ -- Jean Xiao <jianxiao@qti.qualcomm.com>  Mon, 06 Jan 2025 12:00:00 +0000 
